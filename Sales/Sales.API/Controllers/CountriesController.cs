@@ -19,7 +19,20 @@ namespace Sales.API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAsync()
         {
-            return Ok(await _context.Countries.ToListAsync());
+            return Ok(await _context.Countries
+                //Agrego los departamentos de un pais, este es un inner join en SQL 
+                .Include(x => x.States)
+                .ToListAsync());
+        }
+     
+        //Agragamos este nuevo metodo para mostrar los departamentos y cuidades
+        [HttpGet("full")]
+        public async Task<ActionResult> GetFullAsync()
+        {     
+            return Ok(await _context.Countries
+                .Include(x => x.States!)
+                .ThenInclude(x => x.Cities)//Relacion de doble nivel
+                .ToListAsync());
         }
 
         [HttpGet("{id:int}")]

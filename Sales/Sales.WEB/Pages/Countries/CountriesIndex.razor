@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th>País</th>
-                    <th>Estado</th>
+                    <th>Estado / Departamentos</th>
                     <th></th>
                 </tr>
             </thead>
@@ -28,6 +28,10 @@
                         <td>
                             @country.Name
                         </td>
+                        <td>
+                            @country.StatesNumber
+                        </td>
+
                         <td>
                             <a href="/countries/details/@country.Id" class="btn btn-info">Detalles</a>
                             <a href="/countries/edit/@country.Id" class="btn btn-warning">Editar</a>
