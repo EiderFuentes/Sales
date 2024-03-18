@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Sales.API.Data;
+using Sales.API.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection"));
 //Inyectamos SeedBd por la forma  AddTransient una sola vez
 builder.Services.AddTransient<SeedDb>();
+//Inyecto la API de paises
+builder.Services.AddScoped<IApiService, ApiService>();
 
 var app = builder.Build();
 // Inyecion como un constructor
