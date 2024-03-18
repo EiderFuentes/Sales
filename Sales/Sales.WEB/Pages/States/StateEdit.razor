@@ -1,31 +1,30 @@
-﻿@page "/countries/edit/{ContryId:int}"
+﻿@page "/states/edit/{StateId:int}"
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 
-<h3>Editar País</h3>
+<h3>Editar Estado/Departamento</h3>
 
-@if (country == null)
+@if (state == null)
 {
     <p>Cargando...</p>
 }
 else
 {
-    <CountryForm @ref="countryForm" Country="country" OnValidSubmit="EditAsync" ReturnAction="Return" />
+    <StateForm @ref="stateForm" State="state" OnValidSubmit="EditAsync" ReturnAction="Return" />
 }
 
 @code {
-
-    private Country? country;
+    private State? state;
     //Referenciamos el formulario CountryForm
-    private CountryForm? countryForm;
+    private StateForm? stateForm;
 
     [Parameter]
-    public int ContryId { get; set; }
+    public int StateId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var responseHTTP = await repository.Get<Country>($"api/countries/{ContryId}");
+        var responseHTTP = await repository.Get<State>($"api/states/{StateId}");
 
         if (responseHTTP.Error)
         {
@@ -40,12 +39,12 @@ else
             return;
         }
 
-        country = responseHTTP.Response;
+        state = responseHTTP.Response;
     }
 
     private async Task EditAsync()
     {
-        var responseHTTP = await repository.Put("api/countries", country);
+        var responseHTTP = await repository.Put("api/states", state);
 
         if (responseHTTP.Error)
         {
@@ -59,7 +58,9 @@ else
 
     private void Return()
     {
-        countryForm!.FormPostedSuccessfully = true;
-        navigationManager.NavigateTo("countries");
+        stateForm!.FormPostedSuccessfully = true;
+        //metodo para navegar 
+        navigationManager.NavigateTo($"countries/details/{StateId}");
     }
 }
+

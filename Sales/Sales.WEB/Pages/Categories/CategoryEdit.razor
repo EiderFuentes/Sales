@@ -1,4 +1,4 @@
-﻿@page "/categories/edit/{Id:int}"
+﻿@page "/categories/edit/{CategoryId:int}"
 
 @inject NavigationManager navigationManager
 @inject IRepository repository
@@ -21,11 +21,11 @@ else
     private CategoryForm? categoryForm;
 
     [Parameter]
-    public int Id { get; set; }
+    public int CategoryId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var responseHTTP = await repository.Get<Category>($"api/categories/{Id}");
+        var responseHTTP = await repository.Get<Category>($"api/categories/{CategoryId}");
 
         if (responseHTTP.Error)
         {

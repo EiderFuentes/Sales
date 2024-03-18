@@ -57,7 +57,7 @@
         Categories = responseHppt.Response;
     }
 
-    private async Task DeleteAsync(int id)
+    private async Task DeleteAsync(int CategoryId)
     {
         var result = await sweetAlertService.FireAsync(new SweetAlertOptions
             {
@@ -76,7 +76,7 @@
             return;
         }
 
-        var responseHTTP = await repository.Delete($"api/categories/{id}");
+        var responseHTTP = await repository.Delete($"api/categories/{CategoryId}");
 
         if (responseHTTP.Error)
         {

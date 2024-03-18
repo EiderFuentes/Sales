@@ -6,16 +6,15 @@
 
 <h3>Crear País</h3>
 
-<a class="btn btn-primary" href="/countries/create">Nuevo País</a>
-
-<CountryForm @ref="countryForm" Country="country" OnValidSubmit="Create" ReturnAction="Return" />
+<CountryForm @ref="countryForm" Country="country" OnValidSubmit="CreateAsync" ReturnAction="Return" />
 
 @code {
-
+    //Creamos el objeto
     private Country country = new();
+    //Referenciamos el formulario CountryForm
     private CountryForm? countryForm;
 
-    private async Task Create()
+    private async Task CreateAsync()
     {
         var responseHttp = await repository.Post("/api/countries", country);
         if (responseHttp.Error)
