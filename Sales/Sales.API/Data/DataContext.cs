@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Sales.Shared.Entites;
 
 namespace Sales.API.Data
 {
     //Herredamos de la clase DbContext 
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User>
     {
         //Creamos el constructor para conectanos a la base de datos
         public DataContext(DbContextOptions<DataContext> options) : base(options)

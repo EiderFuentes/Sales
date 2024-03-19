@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Sales.API.Data;
+using Sales.API.Helpers;
 using Sales.API.Services;
+using Sales.Shared.Entites;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +19,22 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnec
 builder.Services.AddTransient<SeedDb>();
 //Inyecto la API de paises
 builder.Services.AddScoped<IApiService, ApiService>();
+//Inyecto la ayuda de usuarios
+builder.Services.AddScoped<IUserHelper, UserHelper>();
+
+//Metodo de como voy a manejar los requisitos de los usuarios
+builder.Services.AddIdentity<User, IdentityRole>(x =>
+{
+    x.User.RequireUniqueEmail = true;
+    x.Password.RequireDigit = false;
+    x.Password.RequiredUniqueChars = 0;
+    x.Password.RequireLowercase = false;
+    x.Password.RequireNonAlphanumeric = false;
+    x.Password.RequireUppercase = false;
+})
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
+
 
 var app = builder.Build();
 // Inyecion como un constructor
@@ -40,6 +59,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+//Agregamos este metodo
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 //para habilitar su consumo

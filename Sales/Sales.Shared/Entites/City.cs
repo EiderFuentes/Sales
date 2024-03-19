@@ -19,5 +19,8 @@ namespace Sales.Shared.Entites
         public int StateId { get; set; }
         //Una cuidad pertenece a un Estado
         public State? State { get; set; }
+
+        //Una cuidad tiene una coleccion de usuarios
+        public ICollection<User>? Users { get; set; }
     }
 }
