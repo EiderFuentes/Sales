@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sales.API.Data;
+using Sales.API.Helpers;
+using Sales.Shared.DTOs;
 using Sales.Shared.Entites;
 
 namespace Sales.API.Controllers
@@ -17,14 +19,39 @@ namespace Sales.API.Controllers
         }
         //Consultar Registro
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(await _context.Countries
-                //Agrego los departamentos de un pais, este es un inner join en SQL 
-                .Include(x => x.States)
+            var queryable = _context.Countries
+                   .Include(x => x.States)//Agrego los departamentos de un pais, este es un inner join en SQL 
+                   .AsQueryable();
+
+            //Metodo para agregar filtro
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return Ok(await queryable
+                .OrderBy(x => x.Name)//ordena por el nombre
+                .Paginate(pagination)//paginacion
                 .ToListAsync());
         }
-     
+
+        //Metodo para el total de paginas
+        [HttpGet("totalPages")]
+        public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
+        {
+            var queryable = _context.Countries.AsQueryable();
+            //Metodo para agregar filtro
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+            double count = await queryable.CountAsync();//cuenta cuanto registro tiene
+            double totalPages = Math.Ceiling(count / pagination.RecordsNumber);//Redondea por arriba
+            return Ok(totalPages);
+        }
+
         //Agragamos este nuevo metodo para mostrar los departamentos y cuidades
         [HttpGet("full")]
         public async Task<IActionResult> GetFullAsync()

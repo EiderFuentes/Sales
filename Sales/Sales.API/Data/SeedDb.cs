@@ -27,9 +27,9 @@ namespace Sales.API.Data
 
         private async Task CheckCountriesAsync()
         {
-            //Valida si no hay registro en la base de dato
-            // if (!_context.Countries.Any())
-            //{
+            //Valida si no hay piases registro en la base de datos
+          if (!_context.Countries.Any())
+          {
             //Pregunto si no hay paises
             Response responseCountries = await _apiService.GetListAsync<CountryResponse>("/v1", "/countries");
             if (responseCountries.IsSuccess)
@@ -83,7 +83,7 @@ namespace Sales.API.Data
                     }
                 }
             }
-            //}
+          }
         }
     }
 }
