@@ -1,2 +1,6 @@
 select * from AspNetUsers
 select * from AspNetRoles
+
+select COUNT(1) from Countries
+select COUNT(1) from States
+select COUNT(1) from Cities
