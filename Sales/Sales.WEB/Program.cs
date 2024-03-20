@@ -15,7 +15,11 @@ builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddSweetAlert2();
 //Autenticacion
 builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationProviderTest>();
+
+//Token
+builder.Services.AddScoped<AuthenticationProviderJWT>();
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationProviderJWT>(x => x.GetRequiredService<AuthenticationProviderJWT>());
+builder.Services.AddScoped<ILoginService, AuthenticationProviderJWT>(x => x.GetRequiredService<AuthenticationProviderJWT>());
 
 
 await builder.Build().RunAsync();
