@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Sales.API.Data;
+using Sales.Shared.DTOs;
 using Sales.Shared.Entites;
 
 namespace Sales.API.Helpers
@@ -11,13 +12,16 @@ namespace Sales.API.Helpers
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
         //Creamos un contructor para inyectarle el DataContext
-        public UserHelper(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public UserHelper(DataContext context, UserManager<User> userManager, 
+                           RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         //Metodo para crear Usuario
@@ -48,16 +52,30 @@ namespace Sales.API.Helpers
         //Metodo para que me devuelva la cuidad
         public async Task<User> GetUserAsync(string email)
         {
-            return await _context.Users
-                 .Include(u => u.City) //Por cada usuario incluya la cuidad
-                 .ThenInclude(c => c.State)//por cada cuidad incluya el estado
-                 .ThenInclude(s => s.Country)//por cada estado incluya a que pais pertenece
+            var user =  await _context.Users
+                 .Include(u => u.City!) //Por cada usuario incluya la cuidad
+                 .ThenInclude(c => c.State!)//por cada cuidad incluya el estado
+                 .ThenInclude(s => s.Country!)//por cada estado incluya a que pais pertenece
                  .FirstOrDefaultAsync(x => x.Email == email);
+
+            return user!;
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
             return await _userManager.IsInRoleAsync(user, roleName);
+        }
+
+        //Metodo para loguearse
+        public async Task<SignInResult> LoginAsync(LoginDTO model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+        }
+
+        //Metodo para deloguearse
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

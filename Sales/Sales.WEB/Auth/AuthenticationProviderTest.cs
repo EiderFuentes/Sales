@@ -21,7 +21,7 @@ namespace Sales.WEB.Auth
 
              },
              authenticationType: "test");
-            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonimous)));
+            return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(zuluUser)));
         }
 
     }
