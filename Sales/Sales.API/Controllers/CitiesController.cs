@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Azure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,16 @@ namespace Sales.API.Controllers
             _context = context;
         }
 
+        //Es anonimo porque todos los metodos estas protegidos por la autorizacion
+        //Todo los metodos estan protegino menos estes metodo
+        [AllowAnonymous]
+        [HttpGet("combo/{stateId:int}")]
+        public async Task<ActionResult> GetCombo(int stateId)
+        {
+            return Ok(await _context.Cities
+                .Where(x => x.StateId == stateId)
+                .ToListAsync());
+        }
         //Consultar Registro
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] PaginationDTO pagination)

@@ -23,6 +23,17 @@ namespace Sales.API.Controllers
             _context = context;
         }
 
+        //Es anonimo porque todos los metodos estas protegidos por la autorizacion
+        //Todo los metodos estan protegino menos estes metodo
+        [AllowAnonymous]
+        [HttpGet("combo/{countryId:int}")]
+        public async Task<ActionResult> GetCombo(int countryId)
+        {
+            return Ok(await _context.States
+                .Where(x => x.CountryId == countryId)
+                .ToListAsync());
+        }
+
         //Metodo modificado para Consultar Registro y la paginación
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] PaginationDTO pagination)
