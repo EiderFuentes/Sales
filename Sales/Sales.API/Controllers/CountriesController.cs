@@ -30,7 +30,7 @@ namespace Sales.API.Controllers
             return Ok(await _context.Countries.ToListAsync());
         }
 
-        //Consultar Registro
+        //Metodo Get Modificado para agragar la paginación
         [HttpGet]
         public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
